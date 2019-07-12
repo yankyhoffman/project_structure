@@ -116,33 +116,47 @@ $ cat program.py
 import os
 
 class Task:
+    """
+    Class storing `func` along with its `args` and `kwargs` to be run with.
+    """
     def __init__(self, func, args=None, kwargs=None):
         self.func = func
         self.args = args if args else []
         self.kwargs = kwargs if kwargs else {}
 
     def run(self):
+        """
+        Executes stored `func` with its arguments.
+        """
         self.func(*self.args, **self.kwargs)
 
     def __repr__(self):
         return f"<Task({self.func.__name__})>"
 
+# List that will store the registered tasks to be executed by the main program.
 tasks = []
 
 def register_task(args=None, kwargs=None):
+    """
+    Registers decorated function along with the passed `args` and `kwargs` in the `tasks` list
+    as a `Task` for maintained execution.
+    """
     def registerer(func):
-        print(f"Appending {func.__name__}")
-        tasks.append(Task(func, args, kwargs))
-        print(f"task: {tasks}")
-        return func
+        print(f"Appending '{func.__name__}' in {__name__}")
+        tasks.append(Task(func, args, kwargs)) # Saves the function as a task.
+        print(f"> tasks in {__name__}: {tasks}")
+        return func # returns the function untouched.
     return registerer
 
-print(f"Before importing projects. tasks: {tasks}")
+print(f"Before importing projects as {__name__}. tasks: {tasks}")
 import projects
-print(f"After importing projects. tasks: {tasks}")
+print(f"After importing projects as {__name__}. tasks: {tasks}")
 
-for task in tasks:
-    task.run()
+print(f"Iterating over tasks: {tasks} in {__name__}")
+while True:
+    for task in tasks:
+        task.run()
+    break # Only run once in the simulation
 
 ```
 Contents of the individual projects defined in the `projects` directory:
@@ -201,19 +215,21 @@ from . import process1, process2
 
 ```
 Yet when I run the program I see that;
-1. `program.py` gets executed twice (apparently in parallel).
+1. `program.py` gets executed twice (once as `__main__` and once as `program`).
 2. The tasks are appended (in the second execution run).
 Yet when iterating over the tasks, none are found.
 ```
 $ python3 program.py
-Before importing projects. tasks: []
-Before importing projects. tasks: []
-After importing projects. tasks: []
-Appending process1
-task: [<Task(process1)>]
-Appending process2
-task: [<Task(process1)>, <Task(process2)>]
-After importing projects. tasks: []
+Before importing projects as __main__. tasks: []
+Before importing projects as program. tasks: []
+After importing projects as program. tasks: []
+Iterating over tasks: [] in program
+Appending 'process1' in program
+> tasks in program: [<Task(process1)>]
+Appending 'process2' in program
+> tasks in program: [<Task(process1)>, <Task(process2)>]
+After importing projects as __main__. tasks: []
+Iterating over tasks: [] in __main__
 
 ```
 
