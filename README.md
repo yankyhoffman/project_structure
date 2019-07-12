@@ -235,3 +235,75 @@ I don't understand;
 1. Why is the main (`program.py`) file being executed twice, I thought that there can't be circular imports as python caches the imported modules?<br>
 _(I took the idea of the circular imports used in flask applications, i.e. `app.py` imports `routes`, `models` etc. which all of them import `app` and use it to define the functionality, and `app.py` imports them back so that the functionality is added (as flask only runs `app.py`))_
 2. Why is the `tasks` list empty after the processes are appended to it?
+
+# Current solution.
+After comparing my circular import to a flask based app that does circular imports as follows
+
+## Sample flask program that uses circular imports
+Flask app structure
+```
+(venv) $ echo $FLASK_APP
+mgflask.py
+
+(venv) $ tree
+.
+├── app
+│   ├── models
+│   │   ├── __init__.py
+│   │   ├── post.py
+│   │   └── user.py
+│   ├── templates/
+│   ├── forms.py
+│   ├── __init__.py
+│   └── routes.py
+├── config.py
+└── mgflask.py
+
+(venv) $ cat mgflask.py
+#!/usr/bin/env python
+
+from app import app
+
+# ...
+
+(venv) $ cat app/__init__.py
+from flask import Flask
+from config import Config
+# ... # config imports
+
+app = Flask(__name__) # <---
+# ... # config setup
+
+from . import routes, models, errors # <---
+
+(venv) $ cat app/routes.py
+
+from flask import render_template, flash, redirect, url_for, request
+# ... # import extensions
+from . import app, db # <---
+from .forms import ...
+from .models import ...
+
+@app.route('/')
+def index():
+    return render_template('index.html', title='Home')
+
+(venv) $ flask run
+ * Serving Flask app "mgflask.py" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: ???-???-???
+
+```
+
+I restructured my app by;
+
+1. I moved the `Task` class, `tasks` list, `register_task` decorator function into  `projects/__init__.py` and in the bottom of the __init__.py file I import the projects defined in the directory
+2. In the `program.py` file I just `from projects import tasks` and everything works as desired.
+
+the only question that stays is what is the difference between running `prog.py` vs `prog/` (which contains `__main__.py`) (first iteration of my question here...)
