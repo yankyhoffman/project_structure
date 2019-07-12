@@ -5,7 +5,7 @@ and passes it on to another remote resource after processing.
 
 from utils.source import get
 from utils.remote_dest import put
-from program import register_task
+from . import register_task
 
 @register_task(kwargs={'replace_with': 'cleaned'})
 def process1(replace_with):

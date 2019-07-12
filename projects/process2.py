@@ -5,7 +5,7 @@ and saves it locally after processing.
 
 from utils.source import get
 from utils.local_dest import save
-from program import register_task
+from . import register_task
 
 @register_task()
 def process2():
