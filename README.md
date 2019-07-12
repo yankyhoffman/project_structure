@@ -113,8 +113,6 @@ Main program execution script contents:
 $ cat program.py
 #!/usr/bin/env python
 
-import os
-
 class Task:
     """
     Class storing `func` along with its `args` and `kwargs` to be run with.
