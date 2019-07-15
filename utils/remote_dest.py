@@ -25,4 +25,4 @@ def _send(q):
         data = q.get()
         print(f"Sending {data}")
 
-threading.Thread(target=_send, args=(_q,), daemon=True).start()
+threading.Thread(target=_send, args=(_q,)).start()
