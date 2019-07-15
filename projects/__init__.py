@@ -30,9 +30,7 @@ def register_task(args=None, kwargs=None):
     as a `Task` for maintained execution.
     """
     def registerer(func):
-        print(f"Appending '{func.__name__}' in {__name__}")
         tasks.append(_Task(func, args, kwargs)) # Saves the function as a task.
-        print(f"> tasks in {__name__}: {tasks}")
         return func # returns the function untouched.
     return registerer
 
