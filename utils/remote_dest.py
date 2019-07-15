@@ -25,7 +25,7 @@ def _send(q):
     while True:
         time.sleep(1)
         try:
-            data = q.get(timeout=1)
+            data = q.get_nowait()
         except queue.Empty:
             if program_done.is_set():
                 print('No more tasks')
