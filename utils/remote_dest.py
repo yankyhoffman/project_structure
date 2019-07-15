@@ -19,7 +19,7 @@ def put(data):
     logger.info(f"putting '{data}' onto queue.")
     _q.put(data)
 
-def _send(q):
+def _send():
     """
     Emulate remote resource,
     prints to console when data is processed.
@@ -27,13 +27,12 @@ def _send(q):
     while True:
         time.sleep(1)
         try:
-            data = q.get_nowait()
+            data = _q.get_nowait()
+            logger.info(f"sending '{data}' received from queue.")
+            print(f"Sending '{data}'")
         except queue.Empty:
             if program_done.is_set():
                 print('No more tasks')
                 break
-            continue
-        logger.info(f"sending '{data}' received from queue.")
-        print(f"Sending '{data}'")
 
-threading.Thread(target=_send, args=(_q,)).start()
+threading.Thread(target=_send).start()
