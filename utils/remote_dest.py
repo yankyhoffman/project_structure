@@ -7,6 +7,8 @@ import time
 import threading
 import queue
 
+from . import program_done
+
 _q = queue.Queue()
 
 def put(data):
@@ -22,7 +24,13 @@ def _send(q):
     """
     while True:
         time.sleep(1)
-        data = q.get()
+        try:
+            data = q.get(timeout=1)
+        except queue.Empty:
+            if program_done.is_set():
+                print('No more tasks')
+                break
+            continue
         print(f"Sending '{data}'")
 
 threading.Thread(target=_send, args=(_q,)).start()
