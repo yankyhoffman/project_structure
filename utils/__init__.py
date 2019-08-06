@@ -2,8 +2,8 @@
 
 import threading
 
-import logsys
+from .logger import get_project_logger
 
-logger = logsys.get_project_logger(__name__)
+logger = get_project_logger(__name__)
 
 program_done = threading.Event()
