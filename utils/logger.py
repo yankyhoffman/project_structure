@@ -12,7 +12,7 @@ def get_project_logger(name):
     h_logfile = logging.handlers.RotatingFileHandler(
         filename=os.path.join(_log_dir, f"{name}.log"), maxBytes=(10*1024*1024), backupCount=10
     )
-    h_logfile.setLevel(logging.INFO)
+    h_logfile.setLevel(logging.DEBUG)
     h_logfile.setFormatter(
         logging.Formatter('[%(asctime)s - %(levelname)s] %(message)s <%(module)s|%(funcName)s|%(thread)d>')
     )

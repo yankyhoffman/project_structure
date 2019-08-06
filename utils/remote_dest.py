@@ -16,7 +16,7 @@ def put(data):
     """
     Exposed remote API `put` method
     """
-    logger.info(f"putting '{data}' onto queue.")
+    logger.debug(f"putting '{data}' onto queue.")
     _q.put(data)
 
 def _send():
@@ -28,7 +28,7 @@ def _send():
         time.sleep(1)
         try:
             data = _q.get_nowait()
-            logger.info(f"sending '{data}' received from queue.")
+            logger.debug(f"sending '{data}' received from queue.")
             print(f"Sending '{data}'")
         except queue.Empty:
             if program_done.is_set():
