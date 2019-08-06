@@ -7,10 +7,10 @@ _log_dir = os.path.join(_base_dir, '.log')
 
 def get_project_logger(name):
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
-    h_logfile = logging.handlers.TimedRotatingFileHandler(
-        filename=os.path.join(_log_dir, f"{name}.log"), when='D', backupCount=10
+    h_logfile = logging.handlers.RotatingFileHandler(
+        filename=os.path.join(_log_dir, f"{name}.log"), maxBytes=(10*1024*1024), backupCount=10
     )
     h_logfile.setLevel(logging.INFO)
     h_logfile.setFormatter(
