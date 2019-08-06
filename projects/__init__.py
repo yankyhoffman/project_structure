@@ -34,7 +34,9 @@ def register_task(args=None, kwargs=None):
         return func # returns the function untouched.
     return registerer
 
-from . import process1, process2
+from . import process1
+from . import process2
+from . import process3
 
 # TODO: Dynamically import all projects (whether file or directory (as project)) that wil be created in the `projects` directory automatically (ignoring any modules that will start with an `_`)
 # Something in the sense of:
